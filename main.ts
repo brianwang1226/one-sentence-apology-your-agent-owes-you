@@ -7,11 +7,13 @@ import { join } from "node:path";
 
 const ENTRY = `I'm sorry I said the meeting was at 3 and the client was Priya — it's at 9, I've never met Priya, and your slides are a grocery list.`;
 
-// Kit gate: 1-200 UTF-8 chars, not only whitespace. Fail loudly instead of
-// writing an entry the judge would reject.
+// Kit gate: 1-200 UTF-8 chars, not only whitespace, and exactly one
+// sentence (one terminal period). Fail loudly instead of writing an entry
+// the judge would reject.
 const len = [...ENTRY].length;
-if (len < 1 || len > 200 || ENTRY.trim().length === 0) {
-  console.error(`Entry rejected by local gate: ${len} chars (must be 1-200, non-blank).`);
+const terminals = (ENTRY.match(/[.!?]/g) ?? []).length;
+if (len < 1 || len > 200 || ENTRY.trim().length === 0 || terminals !== 1) {
+  console.error(`Entry rejected by local gate: ${len} chars, ${terminals} sentence terminators (must be 1-200 chars, non-blank, one sentence).`);
   process.exit(1);
 }
 
